@@ -53,18 +53,9 @@ function setup() {
 
   // Add device orientation event listener
   // Request permission for iOS 13+
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     // On click, request permission
-    document.body.addEventListener('click', () => {
-        DeviceOrientationEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-              document.getElementById('permission-overlay')?.remove();
-            }
-          })
-          .catch(console.error);
-    });
+    document.body.addEventListener('click', requestDeviceOrientationPermission);
     // Add a visual cue for the user to click
     const overlay = document.createElement('div');
     overlay.id = 'permission-overlay';
@@ -73,9 +64,28 @@ function setup() {
     document.body.appendChild(overlay);
 
   } else {
-    // Handle regular non-iOS 13+ devices.
+    // Handle regular non-iOS 13+ devices or environments where permission is not needed
     window.addEventListener('deviceorientation', handleOrientation);
+    console.log("DeviceOrientationEvent.requestPermission not available or not needed.");
   }
+}
+
+function requestDeviceOrientationPermission() {
+  DeviceOrientationEvent.requestPermission()
+    .then(permissionState => {
+      if (permissionState === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation);
+        document.getElementById('permission-overlay')?.remove();
+        console.log("Device orientation permission granted.");
+      } else {
+        console.warn("Device orientation permission denied.");
+      }
+    })
+    .catch(error => {
+      console.error("Error requesting device orientation permission:", error);
+    });
+  document.body.removeEventListener('click', requestDeviceOrientationPermission);
+}
 }
 
 function draw() {
@@ -213,6 +223,7 @@ function windowResized() {
 
 function handleOrientation(event) {
   const { beta, gamma } = event; // beta: -180 to 180 (front/back), gamma: -90 to 90 (left/right)
+  console.log(`Raw beta: ${beta}, gamma: ${gamma}`);
   let gx = 0;
   let gy = 0;
 
