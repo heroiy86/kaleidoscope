@@ -32,7 +32,7 @@ This application is designed to be easily deployed on GitHub Pages. Follow these
 1.  **Push your code to a GitHub repository** (if you haven't already).
 2.  **Go to your repository on GitHub.**
 3.  **Navigate to `Settings` > `Pages`.**
-4.  **Under `Branch`, select `main` (or your primary branch) and `/ (root)` for the folder.**
+4.  **Under `Branch`, select the desired branch (e.g., `main`, `gh-pages`, or any other branch you prefer) and `/ (root)` for the folder.**
 5.  **Click `Save`.**
 
 Your application will be deployed to `https://<your-username>.github.io/<your-repository-name>/` within a few minutes.
