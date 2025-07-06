@@ -236,8 +236,29 @@ function windowResized() {
 
 function handleOrientation(event) {
   const { beta, gamma } = event; // beta: -180 to 180 (front/back), gamma: -90 to 90 (left/right)
+  let gx = 0;
+  let gy = 0;
+
+  // Adjust gravity based on screen orientation
+  const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+  const angle = orientation.angle || 0; // 0, 90, 180, 270
+
+  if (angle === 0) { // Portrait, upright
+    gx = gamma;
+    gy = beta;
+  } else if (angle === 90) { // Landscape, home button right
+    gx = beta;
+    gy = -gamma;
+  } else if (angle === 180) { // Portrait, upside down
+    gx = -gamma;
+    gy = -beta;
+  } else if (angle === 270) { // Landscape, home button left
+    gx = -beta;
+    gy = gamma;
+  }
+
   const gravity = engine.world.gravity;
-  // Map gamma and beta to gravity, with a multiplier for sensitivity
-  gravity.x = constrain(gamma / 30, -1, 1);
-  gravity.y = constrain(beta / 30, -1, 1);
+  // Map adjusted values to gravity, with a multiplier for sensitivity
+  gravity.x = constrain(gx / 30, -1, 1);
+  gravity.y = constrain(gy / 30, -1, 1);
 }
