@@ -55,10 +55,9 @@ function setup() {
     });
   }
 
-  // Add touch event listeners for gravity control
+  // Add touch event listeners
   let touchStartX = 0;
   let touchStartY = 0;
-  let currentRotationAngle = 0; // Current rotation angle for gravity
 
   canvas.addEventListener('touchstart', (event) => {
     if (event.touches.length > 0) {
@@ -86,12 +85,10 @@ function setup() {
       if (deltaAngle > PI) deltaAngle -= 2 * PI;
       if (deltaAngle < -PI) deltaAngle += 2 * PI;
 
-      currentRotationAngle += deltaAngle; // Accumulate rotation
-
-      // Apply gravity based on the rotation angle
-      const gravityMagnitude = 1; // Standard gravity for Matter.js
-      world.gravity.x = gravityMagnitude * cos(currentRotationAngle + PI / 2); // +PI/2 to align with Y-axis up
-      world.gravity.y = gravityMagnitude * sin(currentRotationAngle + PI / 2);
+      // Apply angular velocity to all particles in the world
+      for (let i = 0; i < particles.length; i++) {
+        Matter.Body.setAngularVelocity(particles[i], deltaAngle * 0.1); // Adjust multiplier for sensitivity
+      }
 
       // Update start position for next move event to make it continuous
       touchStartX = touchCurrentX;
@@ -131,20 +128,6 @@ function draw() {
   stroke(255, 100);
   strokeWeight(2);
   ellipse(0, 0, kaleidoscopeRadius * 2);
-
-  // Draw gravity direction arrow
-  push();
-  translate(width / 2, height / 2);
-  const gravity = engine.world.gravity;
-  const arrowLength = 50;
-  const arrowAngle = atan2(gravity.y, gravity.x);
-  rotate(arrowAngle);
-  stroke(255, 200, 0); // Yellowish orange
-  strokeWeight(3);
-  line(0, 0, arrowLength, 0);
-  line(arrowLength, 0, arrowLength - 10, -5);
-  line(arrowLength, 0, arrowLength - 10, 5);
-  pop();
 }
 
 function createParticle() {
