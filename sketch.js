@@ -15,9 +15,22 @@ function setup() {
   // Calculate kaleidoscope radius
   kaleidoscopeRadius = min(width, height) * 0.45; // Slightly less than half to leave some margin
 
-  // Add circular wall for particles
+  // Create a robust circular boundary using many small rectangles
+  const numSegments = 60; // Number of segments for the circular wall
+  const segmentThickness = 10;
   const wallOptions = { isStatic: true, restitution: 1, friction: 0 };
-  World.add(world, Bodies.circle(width / 2, height / 2, kaleidoscopeRadius, wallOptions));
+  for (let i = 0; i < numSegments; i++) {
+    const angle = map(i, 0, numSegments, 0, TWO_PI);
+    const x = width / 2 + (kaleidoscopeRadius + segmentThickness / 2) * cos(angle);
+    const y = height / 2 + (kaleidoscopeRadius + segmentThickness / 2) * sin(angle);
+    const segment = Bodies.rectangle(x, y, segmentThickness, kaleidoscopeRadius * TWO_PI / numSegments, {
+      isStatic: true,
+      restitution: 1,
+      friction: 0,
+      angle: angle + HALF_PI // Rotate segment to align with circle
+    });
+    World.add(world, segment);
+  }
 
   // Add some initial particles
   for (let i = 0; i < numParticles; i++) {
@@ -109,6 +122,20 @@ function draw() {
   stroke(255, 100);
   strokeWeight(2);
   ellipse(0, 0, kaleidoscopeRadius * 2);
+
+  // Draw gravity direction arrow
+  push();
+  translate(width / 2, height / 2);
+  const gravity = engine.world.gravity;
+  const arrowLength = 50;
+  const arrowAngle = atan2(gravity.y, gravity.x);
+  rotate(arrowAngle);
+  stroke(255, 200, 0); // Yellowish orange
+  strokeWeight(3);
+  line(0, 0, arrowLength, 0);
+  line(arrowLength, 0, arrowLength - 10, -5);
+  line(arrowLength, 0, arrowLength - 10, 5);
+  pop();
 }
 
 function createParticle() {
@@ -194,8 +221,26 @@ function drawParticle(particle) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  // Recalculate and recreate the circular wall
   kaleidoscopeRadius = min(width, height) * 0.45; // Recalculate radius on resize
-  // Note: walls are not resized. For a full app, you'd need to remove and recreate them.
+  // Remove existing walls
+  World.clear(world, false);
+  // Create a robust circular boundary using many small rectangles
+  const numSegments = 60; // Number of segments for the circular wall
+  const segmentThickness = 10;
+  const wallOptions = { isStatic: true, restitution: 1, friction: 0 };
+  for (let i = 0; i < numSegments; i++) {
+    const angle = map(i, 0, numSegments, 0, TWO_PI);
+    const x = width / 2 + (kaleidoscopeRadius + segmentThickness / 2) * cos(angle);
+    const y = height / 2 + (kaleidoscopeRadius + segmentThickness / 2) * sin(angle);
+    const segment = Bodies.rectangle(x, y, segmentThickness, kaleidoscopeRadius * TWO_PI / numSegments, {
+      isStatic: true,
+      restitution: 1,
+      friction: 0,
+      angle: angle + HALF_PI // Rotate segment to align with circle
+    });
+    World.add(world, segment);
+  }
 }
 
 function handleOrientation(event) {
