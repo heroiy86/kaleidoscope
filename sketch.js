@@ -15,14 +15,9 @@ function setup() {
   // Calculate kaleidoscope radius
   kaleidoscopeRadius = min(width, height) * 0.45; // Slightly less than half to leave some margin
 
-  // Add walls (these walls are outside the visible kaleidoscope area)
+  // Add circular wall for particles
   const wallOptions = { isStatic: true, restitution: 1, friction: 0 };
-  World.add(world, [
-    Bodies.rectangle(width / 2, -5, width, 10, wallOptions), // top
-    Bodies.rectangle(width / 2, height + 5, width, 10, wallOptions), // bottom
-    Bodies.rectangle(-5, height / 2, 10, height, wallOptions), // left
-    Bodies.rectangle(width + 5, height / 2, 10, height, wallOptions) // right
-  ]);
+  World.add(world, Bodies.circle(width / 2, height / 2, kaleidoscopeRadius, wallOptions));
 
   // Add some initial particles
   for (let i = 0; i < numParticles; i++) {
@@ -98,11 +93,14 @@ function draw() {
     drawParticles();
     scale(1, -1); // Reflect for kaleidoscope effect
     drawParticles();
+  }
 
-    // Draw kaleidoscope sector lines
-    stroke(255, 50); // White with some transparency
-    strokeWeight(1);
+  // Draw kaleidoscope sector lines
+  stroke(255, 50); // White with some transparency
+  strokeWeight(1);
+  for (let i = 0; i < numSectors; i++) {
     line(0, 0, kaleidoscopeRadius, 0);
+    rotate(TWO_PI / numSectors);
   }
   pop(); // End clipping
 
