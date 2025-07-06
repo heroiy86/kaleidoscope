@@ -1,5 +1,5 @@
-import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.165.0/three.min.js';
-import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js';
+import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.min.js';
+import * as CANNON from 'https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.min.js';
 
 // Three.js variables
 let scene, camera, renderer;
