@@ -86,7 +86,6 @@ function requestDeviceOrientationPermission() {
     });
   document.body.removeEventListener('click', requestDeviceOrientationPermission);
 }
-}
 
 function draw() {
   background(0, 25); // Fading background for a trail effect
