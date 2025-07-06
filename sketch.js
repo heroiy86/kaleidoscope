@@ -108,13 +108,7 @@ function draw() {
     drawParticles();
   }
 
-  // Draw kaleidoscope sector lines
-  stroke(255, 50); // White with some transparency
-  strokeWeight(1);
-  for (let i = 0; i < numSectors; i++) {
-    line(0, 0, kaleidoscopeRadius, 0);
-    rotate(TWO_PI / numSectors);
-  }
+  
   pop(); // End clipping
 
   // Draw the outer circle boundary
@@ -183,10 +177,7 @@ function createParticle() {
 function drawParticles() {
     for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        // Only draw particles if they are within the kaleidoscope radius
-        if (dist(0, 0, p.position.x, p.position.y) < kaleidoscopeRadius + p.circleRadius) { // Add particle radius for full visibility
-            drawParticle(p);
-        }
+        drawParticle(p);
     }
 }
 
