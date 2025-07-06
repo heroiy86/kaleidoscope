@@ -39,7 +39,9 @@ function setup() {
 
   // Particle count slider setup
   const particleCountSlider = document.getElementById('particleCount');
+  const particleCountDisplay = document.getElementById('particleCountDisplay');
   particleCountSlider.value = numParticles; // Set initial slider value
+  particleCountDisplay.textContent = numParticles; // Set initial display value
   particleCountSlider.addEventListener('input', () => {
     const newParticleCount = parseInt(particleCountSlider.value);
     const diff = newParticleCount - particles.length;
@@ -59,6 +61,7 @@ function setup() {
       }
     }
     numParticles = newParticleCount; // Update the global particle count
+    particleCountDisplay.textContent = numParticles; // Update display
   });
 
   // Add device orientation event listener
@@ -143,8 +146,8 @@ function createParticle() {
   let particle;
 
   const options = {
-      restitution: 0.8,
-      friction: 0.1,
+      restitution: 0.5, // Slightly lower restitution
+      friction: 0.5,    // Higher friction
       density: 0.001
   };
 
