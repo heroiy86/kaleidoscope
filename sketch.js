@@ -3,32 +3,26 @@ const { Engine, World, Bodies, Composite } = Matter;
 let engine;
 let world;
 let particles = [];
-let numParticles = 10; // Increased particle count
+let numParticles = 10; // Initial particle count
 let kaleidoscopeRadius; // Define kaleidoscope radius globally
 
 function setup() {
-  console.log("setup() started.");
   createCanvas(windowWidth, windowHeight);
-  console.log("Canvas created.");
   colorMode(HSB, 360, 100, 100, 100); // Use HSB color mode for vibrant colors
   engine = Engine.create();
   world = engine.world;
-  console.log("Matter.js engine and world created.");
 
   // Calculate kaleidoscope radius
   kaleidoscopeRadius = min(width, height) * 0.4; // Slightly less than half to leave some margin
-  console.log(`Kaleidoscope radius: ${kaleidoscopeRadius}`);
 
   // Create a single robust circular boundary
   const wallOptions = { isStatic: true, restitution: 0.5, friction: 0 }; // Match particle restitution
   World.add(world, Bodies.circle(width / 2, height / 2, kaleidoscopeRadius, wallOptions));
-  console.log("Circular wall added.");
 
   // Add some initial particles
   for (let i = 0; i < numParticles; i++) {
     particles.push(createParticle());
   }
-  console.log(`${numParticles} initial particles created.`);
 
   // Particle count slider setup
   const particleCountSlider = document.getElementById('particleCount');
@@ -56,33 +50,22 @@ function setup() {
       }
       numParticles = newParticleCount; // Update the global particle count
       particleCountDisplay.textContent = numParticles; // Update display
-      console.log(`Particle count changed to: ${numParticles}`);
     });
-    console.log("Particle count slider setup complete.");
-  } else {
-    console.warn("Particle count slider or display element not found.");
   }
 
   // Add device orientation event listener
   // Request permission for iOS 13+
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    console.log("DeviceOrientationEvent.requestPermission is available.");
-    // On click, request permission
     document.body.addEventListener('click', requestDeviceOrientationPermission);
-    // Add a visual cue for the user to click
     const overlay = document.createElement('div');
     overlay.id = 'permission-overlay';
     overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 100;';
     overlay.innerHTML = 'Click to start';
     document.body.appendChild(overlay);
-    console.log("Permission overlay added.");
 
   } else {
-    // Handle regular non-iOS 13+ devices or environments where permission is not needed
     window.addEventListener('deviceorientation', handleOrientation);
-    console.log("DeviceOrientationEvent.requestPermission not available or not needed. Adding event listener directly.");
   }
-  console.log("setup() finished.");
 }
 
 function requestDeviceOrientationPermission() {
@@ -91,7 +74,6 @@ function requestDeviceOrientationPermission() {
       if (permissionState === 'granted') {
         window.addEventListener('deviceorientation', handleOrientation);
         document.getElementById('permission-overlay')?.remove();
-        console.log("Device orientation permission granted.");
       } else {
         console.warn("Device orientation permission denied.");
       }
@@ -103,7 +85,6 @@ function requestDeviceOrientationPermission() {
 }
 
 function draw() {
-  // console.log("draw() called."); // Uncomment for very frequent logging
   background(0, 25); // Fading background for a trail effect
   Engine.update(engine);
 
@@ -123,7 +104,6 @@ function draw() {
     drawParticles();
   }
 
-  
   pop(); // End clipping
 
   // Draw the outer circle boundary
@@ -238,7 +218,6 @@ function windowResized() {
 
 function handleOrientation(event) {
   const { beta, gamma } = event; // beta: -180 to 180 (front/back), gamma: -90 to 90 (left/right)
-  console.log(`Raw beta: ${beta}, gamma: ${gamma}`);
   let gx = 0;
   let gy = 0;
 
