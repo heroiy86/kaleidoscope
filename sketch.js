@@ -3,7 +3,7 @@ const { Engine, World, Bodies, Composite } = Matter;
 let engine;
 let world;
 let particles = [];
-let numParticles = 100; // Increased particle count
+let numParticles = 10; // Increased particle count
 let kaleidoscopeRadius; // Define kaleidoscope radius globally
 
 function setup() {
