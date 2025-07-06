@@ -10,10 +10,6 @@ let kaleidoscopeRadius = 10; // Radius for the 3D kaleidoscope effect
 let world;
 let kaleidoscopeBoundaryBody; // For the 3D spherical boundary
 
-// Device orientation variables
-let permissionGranted = false;
-let alpha = 0, beta = 0, gamma = 0; // Device orientation angles
-
 // --- Setup Functions ---
 
 function setupThreeJS() {
@@ -111,56 +107,6 @@ function createParticle3D() {
     return { mesh: masterMesh, body, material };
 }
 
-// --- Event Handlers ---
-
-function handleOrientation(event) {
-    alpha = event.alpha; // Z-axis rotation (0-360)
-    beta = event.beta;   // X-axis rotation (-180 to 180)
-    gamma = event.gamma; // Y-axis rotation (-90 to 90)
-
-    // Convert degrees to radians
-    const alphaRad = THREE.MathUtils.degToRad(alpha);
-    const betaRad = THREE.MathUtils.degToRad(beta);
-    const gammaRad = THREE.MathUtils.degToRad(gamma);
-
-    // Create a rotation matrix from device orientation angles
-    const euler = new THREE.Euler(betaRad, alphaRad, -gammaRad, 'YXZ'); // YXZ order for device orientation
-    const quaternion = new THREE.Quaternion();
-    quaternion.setFromEuler(euler);
-
-    // Define a base gravity vector (e.g., straight down in device coordinates)
-    const baseGravity = new THREE.Vector3(0, -1, 0);
-
-    // Rotate the base gravity vector by the device's orientation
-    baseGravity.applyQuaternion(quaternion);
-
-    // Apply the rotated gravity to Cannon.js world
-    world.gravity.set(baseGravity.x * 9.82, baseGravity.y * 9.82, baseGravity.z * 9.82);
-}
-
-function requestDeviceOrientationPermission() {
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-                if (permissionState === 'granted') {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                    permissionGranted = true;
-                    document.getElementById('permission-overlay')?.remove();
-                } else {
-                    console.warn("Device orientation permission denied.");
-                }
-            })
-            .catch(error => {
-                console.error("Error requesting device orientation permission:", error);
-            });
-    } else {
-        // For non-iOS 13+ devices or browsers that don't support requestPermission
-        window.addEventListener('deviceorientation', handleOrientation);
-        permissionGranted = true;
-        document.getElementById('permission-overlay')?.remove();
-    }
-}
-
 // --- Main Loop ---
 
 function animate() {
@@ -189,19 +135,54 @@ window.onload = () => {
         particles.push(createParticle3D());
     }
 
-    // Permission overlay for iOS 13+
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        const overlay = document.createElement('div');
-        overlay.id = 'permission-overlay';
-        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 100;';
-        overlay.innerHTML = 'Click to start';
-        document.body.appendChild(overlay);
-        overlay.addEventListener('click', requestDeviceOrientationPermission);
-    } else {
-        // Automatically start for non-iOS 13+ devices
-        window.addEventListener('deviceorientation', handleOrientation);
-        permissionGranted = true;
-    }
+    // Add touch event listeners
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let currentRotationAngle = 0; // Current rotation angle for gravity
+
+    renderer.domElement.addEventListener('touchstart', (event) => {
+        if (event.touches.length > 0) {
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+        }
+    });
+
+    renderer.domElement.addEventListener('touchmove', (event) => {
+        if (event.touches.length > 0) {
+            const touchCurrentX = event.touches[0].clientX;
+            const touchCurrentY = event.touches[0].clientY;
+
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Calculate angle from center to touch start
+            const startAngle = Math.atan2(touchStartY - centerY, touchStartX - centerX);
+            // Calculate angle from center to touch current
+            const currentAngle = Math.atan2(touchCurrentY - centerY, touchCurrentX - centerX);
+
+            let deltaAngle = currentAngle - startAngle;
+
+            // Adjust for angle wrap-around
+            if (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI;
+            if (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI;
+
+            currentRotationAngle += deltaAngle; // Accumulate rotation
+
+            // Apply gravity based on the rotation angle
+            const gravityMagnitude = 9.82; // Standard gravity
+            world.gravity.x = gravityMagnitude * Math.cos(currentRotationAngle + Math.PI / 2); // +PI/2 to align with Y-axis up
+            world.gravity.y = gravityMagnitude * Math.sin(currentRotationAngle + Math.PI / 2);
+            world.gravity.z = 0; // Assuming rotation is in XY plane
+
+            // Update start position for next move event to make it continuous
+            touchStartX = touchCurrentX;
+            touchStartY = touchCurrentY;
+        }
+    });
+
+    renderer.domElement.addEventListener('touchend', (event) => {
+        // Optionally reset gravity or apply a damping effect
+    });
 
     animate(); // Start the animation loop
 };
