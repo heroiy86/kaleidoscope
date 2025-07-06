@@ -261,7 +261,13 @@ function handleOrientation(event) {
   }
 
   const gravity = engine.world.gravity;
-  // Map adjusted values to gravity, with a multiplier for sensitivity
-  gravity.x = constrain(gx / 30, -1, 1);
-  gravity.y = constrain(gy / 30, -1, 1);
-}
+  const threshold = 2; // Degrees within which gravity is set to zero
+
+  if (abs(gx) < threshold && abs(gy) < threshold) {
+    gravity.x = 0;
+    gravity.y = 0;
+  } else {
+    // Map adjusted values to gravity, with a multiplier for sensitivity
+    gravity.x = constrain(gx / 30, -1, 1);
+    gravity.y = constrain(gy / 30, -1, 1);
+  }
