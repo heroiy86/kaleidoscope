@@ -245,3 +245,4 @@ function handleOrientation(event) {
     gravity.x = constrain(gx / 30, -1, 1);
     gravity.y = constrain(gy / 30, -1, 1);
   }
+}
