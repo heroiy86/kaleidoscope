@@ -1,8 +1,5 @@
 
 
-const THREE = window.THREE;
-const CANNON = window.CANNON;
-
 // Three.js variables
 let scene, camera, renderer;
 let particles = []; // Stores objects with master mesh, body, and kaleidoscope group
@@ -14,7 +11,7 @@ let kaleidoscopeBoundaryBody; // For the 3D spherical boundary
 
 // --- Setup Functions ---
 
-function setupThreeJS() {
+function setupThreeJS(THREE) {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -37,7 +34,7 @@ function setupThreeJS() {
     scene.add(boundaryMesh);
 }
 
-function setupCannonJS() {
+function setupCannonJS(CANNON) {
     world = new CANNON.World();
     world.gravity.set(0, -9.82, 0); // m/s²
 
@@ -47,7 +44,7 @@ function setupCannonJS() {
     world.addBody(kaleidoscopeBoundaryBody);
 }
 
-function createParticle3D() {
+function createParticle3D(THREE, CANNON) {
     const radius = Math.random() * 0.2 + 0.2; // Smaller particles for kaleidoscope
     const baseColor = new THREE.Color(Math.random() * 0xffffff);
 
@@ -141,12 +138,15 @@ function animate() {
 // --- Initialization ---
 
 window.onload = () => {
-    setupThreeJS();
-    setupCannonJS();
+    const THREE = window.THREE;
+    const CANNON = window.CANNON;
+
+    setupThreeJS(THREE);
+    setupCannonJS(CANNON);
 
     // Add initial particles
     for (let i = 0; i < 20; i++) { // Start with 20 particles
-        particles.push(createParticle3D());
+        particles.push(createParticle3D(THREE, CANNON));
     }
 
     // Add touch event listeners
