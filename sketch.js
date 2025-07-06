@@ -15,22 +15,9 @@ function setup() {
   // Calculate kaleidoscope radius
   kaleidoscopeRadius = min(width, height) * 0.4; // Slightly less than half to leave some margin
 
-  // Create a robust circular boundary using many small rectangles
-  const numSegments = 120; // Increased number of segments for a more robust wall
-  const segmentThickness = 20; // Increased thickness for a more robust wall
+  // Create a single robust circular boundary
   const wallOptions = { isStatic: true, restitution: 0.5, friction: 0 }; // Match particle restitution
-  for (let i = 0; i < numSegments; i++) {
-    const angle = map(i, 0, numSegments, 0, TWO_PI);
-    const x = width / 2 + (kaleidoscopeRadius + segmentThickness / 2) * cos(angle);
-    const y = height / 2 + (kaleidoscopeRadius + segmentThickness / 2) * sin(angle);
-    const segment = Bodies.rectangle(x, y, segmentThickness, kaleidoscopeRadius * TWO_PI / numSegments, {
-      isStatic: true,
-      restitution: 0.5, // Match particle restitution
-      friction: 0,
-      angle: angle + HALF_PI // Rotate segment to align with circle
-    });
-    World.add(world, segment);
-  }
+  World.add(world, Bodies.circle(width / 2, height / 2, kaleidoscopeRadius, wallOptions));
 
   // Add some initial particles
   for (let i = 0; i < numParticles; i++) {
@@ -219,22 +206,9 @@ function windowResized() {
   kaleidoscopeRadius = min(width, height) * 0.4; // Recalculate radius on resize
   // Remove existing walls
   World.clear(world, false);
-  // Create a robust circular boundary using many small rectangles
-  const numSegments = 120; // Increased number of segments for a more robust wall
-  const segmentThickness = 20; // Increased thickness for a more robust wall
+  // Create a single robust circular boundary
   const wallOptions = { isStatic: true, restitution: 0.5, friction: 0 }; // Match particle restitution
-  for (let i = 0; i < numSegments; i++) {
-    const angle = map(i, 0, numSegments, 0, TWO_PI);
-    const x = width / 2 + (kaleidoscopeRadius + segmentThickness / 2) * cos(angle);
-    const y = height / 2 + (kaleidoscopeRadius + segmentThickness / 2) * sin(angle);
-    const segment = Bodies.rectangle(x, y, segmentThickness, kaleidoscopeRadius * TWO_PI / numSegments, {
-      isStatic: true,
-      restitution: 0.5, // Match particle restitution
-      friction: 0,
-      angle: angle + HALF_PI // Rotate segment to align with circle
-    });
-    World.add(world, segment);
-  }
+  World.add(world, Bodies.circle(width / 2, height / 2, kaleidoscopeRadius, wallOptions));
 }
 
 function handleOrientation(event) {
