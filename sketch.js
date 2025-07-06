@@ -1,5 +1,8 @@
 
 
+const THREE = window.THREE;
+const CANNON = window.CANNON;
+
 // Three.js variables
 let scene, camera, renderer;
 let particles = []; // Stores objects with master mesh, body, and kaleidoscope group
