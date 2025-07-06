@@ -137,69 +137,73 @@ function animate() {
 
 // --- Initialization ---
 
-window.onload = () => {
-    const THREE = window.THREE;
-    const CANNON = window.CANNON;
+const THREE = window.THREE;
+const CANNON = window.CANNON;
 
-    setupThreeJS(THREE);
-    setupCannonJS(CANNON);
+setupThreeJS(THREE);
+setupCannonJS(CANNON);
 
-    // Add initial particles
-    for (let i = 0; i < 20; i++) { // Start with 20 particles
-        particles.push(createParticle3D(THREE, CANNON));
+// Add initial particles
+for (let i = 0; i < 20; i++) { // Start with 20 particles
+    particles.push(createParticle3D(THREE, CANNON));
+}
+
+// Add touch event listeners
+let touchStartX = 0;
+let touchStartY = 0;
+let currentRotationAngle = 0; // Current rotation angle for gravity
+
+renderer.domElement.addEventListener('touchstart', (event) => {
+    if (event.touches.length > 0) {
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
     }
+});
 
-    // Add touch event listeners
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let currentRotationAngle = 0; // Current rotation angle for gravity
+renderer.domElement.addEventListener('touchmove', (event) => {
+    if (event.touches.length > 0) {
+        const touchCurrentX = event.touches[0].clientX;
+        const touchCurrentY = event.touches[0].clientY;
 
-    renderer.domElement.addEventListener('touchstart', (event) => {
-        if (event.touches.length > 0) {
-            touchStartX = event.touches[0].clientX;
-            touchStartY = event.touches[0].clientY;
-        }
-    });
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
 
-    renderer.domElement.addEventListener('touchmove', (event) => {
-        if (event.touches.length > 0) {
-            const touchCurrentX = event.touches[0].clientX;
-            const touchCurrentY = event.touches[0].clientY;
+        // Calculate angle from center to touch start
+        const startAngle = Math.atan2(touchStartY - centerY, touchStartX - centerX);
+        // Calculate angle from center to touch current
+        const currentAngle = Math.atan2(touchCurrentY - centerY, touchCurrentX - centerX);
 
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
+        let deltaAngle = currentAngle - startAngle;
 
-            // Calculate angle from center to touch start
-            const startAngle = Math.atan2(touchStartY - centerY, touchStartX - centerX);
-            // Calculate angle from center to touch current
-            const currentAngle = Math.atan2(touchCurrentY - centerY, touchCurrentX - centerX);
+        // Adjust for angle wrap-around
+        if (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI;
+        if (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI;
 
-            let deltaAngle = currentAngle - startAngle;
+        currentRotationAngle += deltaAngle; // Accumulate rotation
 
-            // Adjust for angle wrap-around
-            if (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI;
-            if (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI;
+        // Apply gravity based on the rotation angle
+        const gravityMagnitude = 9.82; // Standard gravity
+        world.gravity.x = gravityMagnitude * Math.cos(currentRotationAngle + Math.PI / 2); // +PI/2 to align with Y-axis up
+        world.gravity.y = gravityMagnitude * Math.sin(currentRotationAngle + Math.PI / 2);
+        world.gravity.z = 0; // Assuming rotation is in XY plane
 
-            currentRotationAngle += deltaAngle; // Accumulate rotation
+        // Update start position for next move event to make it continuous
+        touchStartX = touchCurrentX;
+        touchStartY = touchCurrentY;
+    }
+});
 
-            // Apply gravity based on the rotation angle
-            const gravityMagnitude = 9.82; // Standard gravity
-            world.gravity.x = gravityMagnitude * Math.cos(currentRotationAngle + Math.PI / 2); // +PI/2 to align with Y-axis up
-            world.gravity.y = gravityMagnitude * Math.sin(currentRotationAngle + Math.PI / 2);
-            world.gravity.z = 0; // Assuming rotation is in XY plane
+renderer.domElement.addEventListener('touchend', (event) => {
+    // Optionally reset gravity or apply a damping effect
+});
 
-            // Update start position for next move event to make it continuous
-            touchStartX = touchCurrentX;
-            touchStartY = touchCurrentY;
-        }
-    });
+animate(); // Start the animation loop
 
-    renderer.domElement.addEventListener('touchend', (event) => {
-        // Optionally reset gravity or apply a damping effect
-    });
-
-    animate(); // Start the animation loop
-};
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
