@@ -1,48 +1,48 @@
-# Kaleidoscope App
+# カレイドスコープアプリ
 
-This is a web-based kaleidoscope application that uses p5.js for rendering and Matter.js for 2D physics simulation. It responds to device orientation (tilt) to control gravity, creating an interactive and visually appealing experience.
+これは、p5.js をレンダリングに、Matter.js を2D物理シミュレーションに使用したウェブベースのカレイドスコープアプリケーションです。デバイスの向き（傾き）に反応して重力を制御し、インタラクティブで視覚的に魅力的な体験を生み出します。
 
-## Features
+## 特徴
 
-- **Dynamic Kaleidoscope Effect:** Particles are rendered with a symmetrical kaleidoscope pattern.
-- **Physics Simulation:** Utilizes Matter.js for realistic particle movement and collisions.
-- **Device Tilt Control:** Gravity direction changes based on smartphone tilt (device orientation).
-- **Customizable Particles:** Particles have varied shapes (circles, squares, polygons) and vibrant, rainbow-like colors.
-- **Circular Display Area:** The kaleidoscope is confined to a circular area, enhancing the visual effect.
-- **Particle Count Adjustment:** A slider allows users to dynamically control the number of particles.
-- **iOS Device Compatibility:** Includes a permission request for device orientation on iOS 13+.
+- **ダイナミックなカレイドスコープ効果:** 粒子は対称的なカレイドスコープパターンでレンダリングされます。
+- **物理シミュレーション:** Matter.js を利用して、リアルな粒子の動きと衝突をシミュレートします。
+- **デバイスの傾きによる制御:** スマートフォンの傾き（デバイスの向き）に基づいて重力の方向が変化します。
+- **カスタマイズ可能な粒子:** 粒子は様々な形状（円、四角、多角形）と鮮やかな虹色の色を持っています。
+- **円形表示領域:** カレイドスコープは円形の領域に限定され、視覚効果を高めます。
+- **粒子数調整:** スライダーで粒子の数を動的に制御できます。
+- **iOSデバイス互換性:** iOS 13以降でのデバイスの向きの許可リクエストを含みます。
 
-## How to Use
+## 使い方
 
-1.  **Clone the repository:**
+1.  **リポジトリをクローンします:**
     ```bash
     git clone https://github.com/heroiy86/kaleidoscope.git
     ```
-2.  **Navigate to the project directory:**
+2.  **プロジェクトディレクトリに移動します:**
     ```bash
     cd kaleidoscope
     ```
-3.  **Open `index.html`:**
-    Simply open the `index.html` file in your web browser. For device tilt functionality, it's recommended to open it on a smartphone or tablet.
+3.  **`index.html` を開きます:**
+    ウェブブラウザで `index.html` ファイルを開くだけです。デバイスの傾き機能を使用するには、スマートフォンまたはタブレットで開くことをお勧めします。
 
-## Deployment on GitHub Pages
+## GitHub Pagesへのデプロイ
 
-This application is designed to be easily deployed on GitHub Pages. Follow these steps:
+このアプリケーションは、GitHub Pagesに簡単にデプロイできるように設計されています。以下の手順に従ってください。
 
-1.  **Push your code to a GitHub repository** (if you haven't already).
-2.  **Go to your repository on GitHub.**
-3.  **Navigate to `Settings` > `Pages`.**
-4.  **Under `Branch`, select the desired branch (e.g., `main`, `gh-pages`, or any other branch you prefer) and `/ (root)` for the folder.**
-5.  **Click `Save`.**
+1.  **コードをGitHubリポジトリにプッシュします**（まだ行っていない場合）。
+2.  **GitHubでリポジトリに移動します。**
+3.  **`Settings` > `Pages` に移動します。**
+4.  **`Branch` で、目的のブランチ（例: `main`、`gh-pages`、またはその他の任意のブランチ）と、フォルダに `/ (root)` を選択します。**
+5.  **`Save` をクリックします。**
 
-Your application will be deployed to `https://<your-username>.github.io/<your-repository-name>/` within a few minutes.
+アプリケーションは数分以内に `https://<your-username>.github.io/<your-repository-name>/` にデプロイされます。
 
-## Technologies Used
+## 使用技術
 
--   **p5.js:** For creative coding and drawing.
--   **Matter.js:** For 2D rigid body physics.
--   **HTML, CSS, JavaScript:** Standard web technologies.
+-   **p5.js:** クリエイティブコーディングと描画用。
+-   **Matter.js:** 2D剛体物理用。
+-   **HTML, CSS, JavaScript:** 標準的なウェブ技術。
 
-## License
+## ライセンス
 
-This project is open source and available under the [MIT License](LICENSE).
+このプロジェクトはオープンソースであり、[MITライセンス](LICENSE)の下で利用可能です。
